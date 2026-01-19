@@ -1,0 +1,167 @@
+{
+  "metadata": {
+    "dataSource": "USDA AgTransport 'Latest Week of Grain Basis Data'",
+    "snapshotFile": "Latest_Week_of_Grain_Basis_Data_20260117.csv",
+    "snapshotDate": "2026-01-17",
+    "dataWeek": "Week 51, December 26, 2025",
+    "disclaimer": "All inputs editable. Tool is for demonstration/decision framework only.",
+    "freightNote": "Freight & storage/carry are user inputs (editable); replace with live lane quotes for trading."
+  },
+  "futures": {
+    "corn": {
+      "symbol": "CH26",
+      "description": "March 2026 Corn",
+      "price": 4.498,
+      "source": "USDA AgTransport CSV"
+    },
+    "soybeans": {
+      "symbol": "SH26",
+      "description": "March 2026 Soybeans",
+      "price": 10.724,
+      "source": "USDA AgTransport CSV"
+    },
+    "wheat": {
+      "symbol": "WH26",
+      "description": "March 2026 HRS Wheat",
+      "price": 5.793,
+      "source": "USDA AgTransport CSV"
+    }
+  },
+  "origins": [
+    {
+      "id": "iowa-elevator",
+      "name": "Central Iowa",
+      "proxyLabel": "USDA Iowa Elevator Bid",
+      "location": "Iowa",
+      "basis": -0.368,
+      "basisCents": -36.8,
+      "commodity": "corn",
+      "marketType": "Elevator Bid",
+      "source": "USDA AgTransport CSV - Iowa Corn Elevator Bid"
+    },
+    {
+      "id": "illinois-elevator",
+      "name": "Central Illinois",
+      "proxyLabel": "USDA Illinois Elevator Bid",
+      "location": "Illinois",
+      "basis": -0.248,
+      "basisCents": -24.8,
+      "commodity": "corn",
+      "marketType": "Elevator Bid",
+      "source": "USDA AgTransport CSV - Illinois Corn Elevator Bid"
+    },
+    {
+      "id": "nebraska-elevator",
+      "name": "Eastern Nebraska",
+      "proxyLabel": "USDA Nebraska Elevator Bid",
+      "location": "Nebraska",
+      "basis": -0.568,
+      "basisCents": -56.8,
+      "commodity": "corn",
+      "marketType": "Elevator Bid",
+      "source": "USDA AgTransport CSV - Nebraska Corn Elevator Bid"
+    }
+  ],
+  "destinations": [
+    {
+      "id": "gulf-louisiana",
+      "name": "Gulf Export",
+      "proxyLabel": "USDA Gulf - Louisiana 30-Day to Arrive",
+      "location": "Louisiana Gulf",
+      "basis": 0.722,
+      "basisCents": 72.2,
+      "commodity": "corn",
+      "marketType": "30-Day to Arrive",
+      "source": "USDA AgTransport CSV - Gulf - Louisiana Corn 30-Day"
+    },
+    {
+      "id": "iowa-local",
+      "name": "Local Sale (Iowa)",
+      "proxyLabel": "USDA Iowa Elevator Bid (proxy for local)",
+      "location": "Iowa",
+      "basis": -0.368,
+      "basisCents": -36.8,
+      "commodity": "corn",
+      "marketType": "Elevator Bid",
+      "notes": "Local feedyard/ethanol - using elevator bid as proxy",
+      "source": "USDA AgTransport CSV - Iowa Corn Elevator Bid"
+    },
+    {
+      "id": "toledo-export",
+      "name": "Great Lakes Export",
+      "proxyLabel": "USDA Great Lakes - Toledo 30-Day to Arrive",
+      "location": "Toledo, OH",
+      "basis": -0.258,
+      "basisCents": -25.8,
+      "commodity": "corn",
+      "marketType": "30-Day to Arrive",
+      "source": "USDA AgTransport CSV - Great Lakes - Toledo Corn 30-Day"
+    }
+  ],
+  "freight": {
+    "truck": {
+      "ratePerBuPerMile": 0.004,
+      "notes": "Assumption: ~$0.04/bu per 10 miles. Editable."
+    },
+    "rail": {
+      "routes": {
+        "iowa-gulf": {
+          "origin": "Iowa",
+          "destination": "Gulf (NOLA)",
+          "rate": 1.15,
+          "transitDays": 7
+        }
+      },
+      "notes": "Assumption: shuttle train rate. Verify with rail provider quotes."
+    },
+    "barge": {
+      "routes": {
+        "stl-nola": {
+          "origin": "St. Louis",
+          "destination": "NOLA",
+          "rate": 0.60,
+          "transitDays": 10
+        }
+      },
+      "notes": "USDA GTR: mid-Mississippi spot barge (541% of tariff, Jan 2026)"
+    }
+  },
+  "defaultRoutes": [
+    {
+      "id": "route-1",
+      "name": "Rail to Gulf",
+      "description": "Direct rail to Louisiana Gulf export",
+      "destinationId": "gulf-louisiana",
+      "freightMode": "rail",
+      "freightCost": 1.15,
+      "freightUnit": "$/bu",
+      "distance": null,
+      "transitDays": 7,
+      "notes": "Rail rate is assumption - verify with shuttle quotes"
+    },
+    {
+      "id": "route-2",
+      "name": "Truck + Barge to Gulf",
+      "description": "Truck to river terminal, barge to Louisiana Gulf",
+      "destinationId": "gulf-louisiana",
+      "freightMode": "truck+barge",
+      "freightCost": 1.32,
+      "freightUnit": "$/bu",
+      "distance": 180,
+      "transitDays": 14,
+      "notes": "Truck to STL (180mi @ $0.72) + Barge STL→NOLA ($0.60)"
+    },
+    {
+      "id": "route-3",
+      "name": "Local Sale",
+      "description": "Truck to local buyer (feedyard/ethanol)",
+      "destinationId": "iowa-local",
+      "freightMode": "truck",
+      "freightCost": 0.12,
+      "freightUnit": "$/bu",
+      "distance": 30,
+      "transitDays": 1,
+      "notes": "30-mile haul to local buyer"
+    }
+  ]
+}
